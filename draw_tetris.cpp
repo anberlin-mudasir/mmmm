@@ -8,6 +8,9 @@ DrawTetris::DrawTetris() {
 }
 
 void DrawTetris::start(void){
+	level = LEVEL;
+	score = 0;
+	memset(data, 0, sizeof(data));
 	system("color 07");
 	console.Open();
 	console.SetTitle("俄罗斯方块");
@@ -21,7 +24,6 @@ void DrawTetris::start(void){
 	DrawNext();
 	for (int ch = getch(); ch != 0xD; ch = getch()); //按回车键开始游戏
 	x = 4, y = -2, c = next, z = 0;
-	DrawNext();
 	PlayMusic(P);
 	DealKey();
 }
@@ -75,22 +77,23 @@ bool DrawTetris::InRange(int x, int y, int c, int z) {
 }
 
 void DrawTetris::RemoveRow(void) {
-	int line_count = 0;
-	for (int i = 0; i < 19; ++i) {
-		if (0 == memcmp(data[i], FULLLINE, 11)) {
-			++line_count;
-			for (int m = 0; m < 11; ++m) {
-				for (int n = i; n > 1; --n) {
-					data[n][m] == data[n - 1][m];
-					console.SetColor(data[n][m] == 1 ? COLOR_B : COLOR_C);
-					console.GotoXY(2 + m * 2, 1 + n);
-					console.OutputString("■", 2);
-				}
-				data[0][m] = 0;
-				console.OutputStringNoMove(2 + m * 2, 1, "■", 2);
-			}
-		}
-	}
+    int line_count = 0;
+    for( int i=0; i<19; ++i ) {
+        if( 0 == memcmp( data[i], FULLLINE, 11 ) ) {
+            ++line_count;
+            for( int m=0; m<11; ++m ) {
+                for( int n=i; n>1; --n ) {
+                    data[n][m] = data[n-1][m];
+
+                    console.SetColor( data[n][m]==1?COLOR_B:COLOR_C );
+                    console.GotoXY( 2+m*2, 1+n );
+                    console.OutputString( "■", 2 );
+                }
+                data[0][m] = 0;
+                console.OutputStringNoMove( 2+m*2, 1, "■", 2 );
+            }
+        }
+    }
 
 	if (line_count == 0) return;
 	int add_score = 0;
@@ -163,22 +166,20 @@ void DrawTetris::MoveDown(void) {
 				}
 			}
 		}
-
+		
 		RemoveRow();
-		next = rand() % 7;
 		x = 4, y = -2, c = next, z = 0;
+		next = rand() % 7;
 		DrawNext();
 	}
 	else {
-		Sleep(5000);
 		DrawOver();
 	}
 }
 
 void DrawTetris::DealKey(void) {
 	int cycle = 9 - level;
-	P = 1;
-	bool play_music = 0;
+	bool play_music = 1;
 	for (;;) {
 		for (int i = 0; i < cycle; ++i) {
 			if (kbhit()) { // 检查当前是否有键盘输入
@@ -203,7 +204,7 @@ void DrawTetris::DealKey(void) {
 					break;
 
 				case 61: //按等于 = 号，暂停\\播放音乐
-					play_music ^= 1;
+					play_music = 1 - play_music;
 					if (!play_music) PlaySound(NULL, NULL, SND_FILENAME);
 					else PlayMusic(P);
 					break;
@@ -237,7 +238,7 @@ void DrawTetris::DealKey(void) {
 					break;
 				}
 			}
-			Sleep(55); // 55ms
+			Sleep(65); // 65ms
 		}
 		MoveDown();
 	}

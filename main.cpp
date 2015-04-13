@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	{
 		return 0;
 	}
-	DrawTetris myTetris = DrawTetris();
+	DrawTetris myTetris;
 	myTetris.start();
 
 	return 0;

@@ -37,7 +37,7 @@ makefile
 2. 游戏说明界面
 ![](about.png)
   
-3. 游戏界面
+3. 游戏界面      
 ![](play.png)
 ***
 __音乐过大以外链形式分享：[百度云盘(101.5M)](http://pan.baidu.com/s/1ntC9DMx)__
